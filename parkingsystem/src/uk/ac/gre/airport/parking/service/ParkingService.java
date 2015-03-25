@@ -30,7 +30,7 @@ public class ParkingService implements IParkingService{
 	@Override
 	public Order[] search(String s) {
 		List<Order> orders = orderDao.search(s);
-		if (orders == null || orders.size() == 0) return null;
+		if (orders == null || orders.size() == 0) return new Order[]{};
 		Order[] objects = new Order[orders.size()];
 		orders.toArray(objects);
 		return objects;

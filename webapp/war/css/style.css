@@ -203,15 +203,15 @@ ul.nav{
 }
 }
 .banner {
-	background: url(../images/bnr-2.jpg) no-repeat;
+	background: url(../images/bnr-3.jpg) no-repeat;
 	background-size: 100% 100%;
-	min-height: 780px;
+	min-height: 534px;
 	position: relative;
 }
 .banner1{
-	background: url(../images/bnr-2.jpg) no-repeat;
+	background: url(../images/bnr-3.jpg) no-repeat;
 	background-size: 100% 100%;
-	min-height: 330px;
+	min-height: 534px;
 	position: relative;
 }
 .banner-bottom {
