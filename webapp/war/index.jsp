@@ -1,3 +1,4 @@
+<%@page import="uk.ac.gre.airport.parking.dao.entity.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -57,11 +58,26 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="log-in">
+			
 				<ul>
+				<%
+						User user = (User) session.getAttribute("user");
+						if (user == null) {
+					%>
 					<li><a class="play-icon popup-with-zoom-anim"
 						id="btnShowLogin" href="#small-dialog"><span> </span>Login</a></li>
 					<li><a class="play-icon popup-with-zoom-anim"
 						id="btnShowSignup" href="#small-dialog1">Signup</a></li>
+					<%
+						} else {
+					%>
+						<li><a class="play-icon"
+						 href="<%=request.getContextPath()%>/booking.jsp"><span> </span>Booking</a></li>
+					<li><a class="play-icon"
+						 href="<%=request.getContextPath()%>/handler/logout.jsp">Logout</a></li>
+					<%		
+						}
+					%>
 				</ul>
 			</div>
 		</div>
