@@ -22,7 +22,7 @@ public class CurrencyService {
 	@GET
 	@Path("/convert")
 	@Produces("application/json")
-	public float exchange(@QueryParam("amount") float amount, @QueryParam("code") String code) {
+	public float convert(@QueryParam("amount") float amount, @QueryParam("code") String code) {
 		Currency currency = currencyDAO.findByCode(code);
 		if (currency != null) {
 			return currency.getExchangeRate() * amount;
@@ -30,6 +30,17 @@ public class CurrencyService {
 		return 0.0f;
 	}
 
+	@GET
+	@Path("/exchange")
+	@Produces("application/json")
+	public float exchange(@QueryParam("amount") float amount, @QueryParam("code") String code) {
+		Currency currency = currencyDAO.findByCode(code);
+		if (currency != null) {
+			return  amount / currency.getExchangeRate();
+		}
+		return 0.0f;
+	}
+	
 	@GET
 	@Path("/currencies")
 	@Produces("application/json")

@@ -13,6 +13,10 @@ public interface OrderDAO extends IBaseDAO<Order> {
 	
 	public List<Order> findByDate(Date date);
 	
+	public List<Order> findByUser(long userId);
+	
+	public List<Order> findByParkingTime(Date from, Date to);
+	
 	public List<Order> search(String s);
 	
 	public boolean checkin(String carNo);

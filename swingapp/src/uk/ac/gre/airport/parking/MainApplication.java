@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -28,9 +29,10 @@ import java.awt.Font;
 
 public class MainApplication {
 
-	private JFrame frame;
+	private JFrame frmAirportParkingSystem;
 	private JTable tblOrder;
 	private JTextField txtSearch;
+	private JTextField txtCarNo;
 
 	/**
 	 * Launch the application.
@@ -42,7 +44,7 @@ public class MainApplication {
 					System.out.println("Preparing");
 					MainApplication window = new MainApplication();
 					System.out.println("Done");
-					window.frame.setVisible(true);
+					window.frmAirportParkingSystem.setVisible(true);
 			        
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,10 +64,13 @@ public class MainApplication {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 560, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmAirportParkingSystem = new JFrame();
+		frmAirportParkingSystem.setAlwaysOnTop(true);
+		frmAirportParkingSystem.setTitle("Airport parking system");
+		frmAirportParkingSystem.setResizable(false);
+		frmAirportParkingSystem.setBounds(100, 100, 560, 300);
+		frmAirportParkingSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAirportParkingSystem.getContentPane().setLayout(null);
 		
 		JButton btnSearch = new JButton("Search");
 		btnSearch.addActionListener(new ActionListener() {
@@ -74,21 +79,51 @@ public class MainApplication {
 			}
 		});
 		btnSearch.setBounds(423, 11, 117, 29);
-		frame.getContentPane().add(btnSearch);
+		frmAirportParkingSystem.getContentPane().add(btnSearch);
 		
 		tblOrder = new JTable();
 		JScrollPane scrollPane = new JScrollPane(tblOrder);
-		scrollPane.setBounds(16, 46, 524, 211);
-		frame.getContentPane().add(scrollPane);
+		scrollPane.setBounds(16, 46, 524, 174);
+		frmAirportParkingSystem.getContentPane().add(scrollPane);
 		
 		txtSearch = new JTextField();
 		txtSearch.setBounds(16, 10, 395, 28);
-		frame.getContentPane().add(txtSearch);
+		frmAirportParkingSystem.getContentPane().add(txtSearch);
 		txtSearch.setColumns(10);
+		
+		txtCarNo = new JTextField();
+		txtCarNo.setBounds(168, 232, 134, 28);
+		frmAirportParkingSystem.getContentPane().add(txtCarNo);
+		txtCarNo.setColumns(10);
+		
+		JLabel lblCarRegisterNumber = new JLabel("Car register number");
+		lblCarRegisterNumber.setBounds(26, 238, 130, 16);
+		frmAirportParkingSystem.getContentPane().add(lblCarRegisterNumber);
+		
+		JButton btnGoIn = new JButton("Go in");
+		btnGoIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doGoIn();
+			}
+		});
+		btnGoIn.setBounds(308, 232, 109, 29);
+		frmAirportParkingSystem.getContentPane().add(btnGoIn);
+		
+		JButton btnGoOut = new JButton("Go out");
+		btnGoOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doGoOut();
+			}
+		});
+		btnGoOut.setBounds(431, 232, 109, 29);
+		frmAirportParkingSystem.getContentPane().add(btnGoOut);
+		init();
 		search(txtSearch.getText());
 	}
 	
-	private void search(String s) {
+	private IParkingService parkingService;
+	
+	private void init() {
 		URL url = null;
 		try {
 			url = new URL("http://localhost:8080/WebApplication/ParkingService?wsdl");
@@ -96,8 +131,42 @@ public class MainApplication {
 	        //2nd argument is service name, refer to wsdl document above
 	        QName qname = new QName("http://service.parking.airport.gre.ac.uk/", "ParkingServiceService");
 	        Service service = Service.create(url, qname);
-	        IParkingService parkingService = service.getPort(IParkingService.class);
-	        Order[] orders = parkingService.search(s);
+	        parkingService = service.getPort(IParkingService.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void doGoOut() {
+		if (parkingService != null) {
+			if (parkingService.checkout(txtCarNo.getText())) {
+				JOptionPane.showMessageDialog(frmAirportParkingSystem, "Available! Please go out.", "Goodbye!", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(frmAirportParkingSystem, "Not available!", "Not found", JOptionPane.WARNING_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(frmAirportParkingSystem, "Could not connect to server", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void doGoIn() {
+		if (parkingService != null) {
+			if (parkingService.checkin(txtCarNo.getText())) {
+				JOptionPane.showMessageDialog(frmAirportParkingSystem, "Available! Please go in.", "Welcome!", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(frmAirportParkingSystem, "Not available!", "Not found", JOptionPane.WARNING_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(frmAirportParkingSystem, "Could not connect to server", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void search(String s) {
+		try {
+			
+	        Order[] orders = null;
+	        if (parkingService != null)
+	        	orders = parkingService.search(s);
 	        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	        DefaultTableModel model = new DefaultTableModel();
 	    	model.addColumn("Arrival Date");
@@ -108,7 +177,6 @@ public class MainApplication {
 	    	model.addColumn("Parking Type");
 	        if (orders == null) {
 	        } else {
-	        	
 		        for (Order order : orders) {
 		        	model.addRow(new Object[] {
 		        		    sdf.format(order.getArrivalDate()),

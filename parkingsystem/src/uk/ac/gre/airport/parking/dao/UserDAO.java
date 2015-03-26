@@ -12,4 +12,6 @@ public interface UserDAO extends IBaseDAO<User> {
 	public User login(String username, String password);
 	
 	public List<User> findByRole(long roleId);
+	
+	public User getLatestUser();
 }

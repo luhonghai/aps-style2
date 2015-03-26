@@ -81,6 +81,10 @@ public class UserService extends BaseService<User, UserDAO, UserDaoImpl>{
 		return ((UserDAO) getBean()).login(username, md5(password));
 	}
 	
+	public User getLatestUser() {
+		return ((UserDAO) getBean()).getLatestUser();
+	}
+	
 	private String md5(String input) {
         MessageDigest md = null;
         try {
@@ -97,7 +101,6 @@ public class UserService extends BaseService<User, UserDAO, UserDaoImpl>{
         for (int i = 0; i < byteData.length; i++) {
             sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
         }
-
 
         //convert the byte to hex format method 2
         StringBuffer hexString = new StringBuffer();

@@ -7,7 +7,7 @@
     pageEncoding="UTF-8"%>
 <%
 	OrderService orderService = new OrderService();
-	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	Order order = new Order();
 	order.setType(Integer.parseInt(request.getParameter("selType")));
 	order.setParkId(Long.parseLong(request.getParameter("selCarpark")));

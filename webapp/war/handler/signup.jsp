@@ -19,7 +19,8 @@
 		user.setDob(sdf.parse(request.getParameter("txtDob")));
 	}
 	user.setId(-1L);
-	user = userService.save(user);
+	userService.save(user);
+	user = userService.getLatestUser();
 	if (user != null) {
 		session.setAttribute("user", user);
 		Order order = (Order) session.getAttribute("order");

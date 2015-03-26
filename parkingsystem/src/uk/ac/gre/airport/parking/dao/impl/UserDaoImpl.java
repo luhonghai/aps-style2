@@ -40,4 +40,14 @@ public class UserDaoImpl extends BaseDAO<User> implements UserDAO {
 				.getResultList();
 	}
 
+	@Override
+	public User getLatestUser() {
+		List<User> users = getEntityManager()
+				.createQuery("SELECT u from " + User.class.getName() + " u "
+						+ " ORDER BY id DESC", User.class).
+				setFirstResult(0).setMaxResults(1)
+				.getResultList();
+		return users.size() > 0 ? users.get(0) : null;
+	}
+
 }
